@@ -1,5 +1,7 @@
 import 'package:ed_mahjong/engine/backgrounds/background_flutter.dart';
 import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
+import 'package:ed_mahjong/engine/db_implementations/ICP/ICP_Connector.dart';
+import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
@@ -12,8 +14,14 @@ import 'screens/game/game_screen.dart';
 import 'screens/home.dart';
 import 'screens/settings/settings_screen.dart';
 
-void main() {
+void main() async {
   registerLicences();
+
+  final icpConnector = await ICPconnector.init(newIdl: CounterMethod.idl);
+  
+
+  highscoreDB = CandidHighscoreDB(icpConnector);
+
   runApp(MyApp());
 }
 

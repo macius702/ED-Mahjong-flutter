@@ -44,3 +44,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /assets/tilesets/*/*.png
+lib/engine/db_implementations/ICP/config.dart
