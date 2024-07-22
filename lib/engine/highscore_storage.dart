@@ -6,9 +6,17 @@ import 'db_implementations/ICP/ICP_Connector.dart';
 
 import 'db_implementations/ICP/config.dart' show backendCanisterId, Mode, mode;
 
+class ScoreEntry {
+  final String username;
+  final int score;
+
+  ScoreEntry({required this.username, required this.score});
+}
+
 abstract class IHighscoreDB {
   Future<Map<String, int>> getTimes();
-  Future<void> set(String layout, int time);
+  Future<void> set(String layout, int time, String user);
+  Future<List<ScoreEntry>> get_times_by_board(String layout);
 }
 
 class CandidHighscoreDB extends IHighscoreDB {
@@ -44,10 +52,53 @@ class CandidHighscoreDB extends IHighscoreDB {
   }
 
   @override
-  Future<void> set(String layout, int time) async {
+  Future<List<ScoreEntry>> get_times_by_board(String layout) async {
+    print("Calling CandidHighscoreDB.set: getTimes ...");
+
+    var r = await callActorMethod<Map<dynamic, dynamic>>(
+        CounterMethod.get_times_by_board, [layout]);
+
+    // result is record {scores: []}
+    // result is one element Map
+    // take the value of the signle element of result
+
+    if (r == null) {
+      print("1 CandidHighscoreDB.getTimes: failed: Cannot get times");
+      throw Exception("Cannot get times");
+    }
+
+    var result = r['scores'];
+
+    print("Result is $result");
+    if (result != null) {
+      print("HighscoreStorage: Result is not null. Processing items...");
+      List<ScoreEntry> times = [];
+      for (var item in result) {
+        print('Type of result is ${item.runtimeType}');
+        print('Type of result.entries is ${item.runtimeType}');
+        print('type of item is ${item.runtimeType}');
+
+        print(
+            "HighscoreStorage: Processing item with key ${item[1]} and value ${item[0]}");
+        times.add(ScoreEntry(username: item[1], score: item[0]));
+        print("HighscoreStorage: Added item to times map.");
+      }
+      print(
+          "HighscoreStorage: Finished processing items. Returning times map.");
+
+      print("CandidHighscoreDB.getTimes: result: $times");
+      return times;
+    } else {
+      print("CandidHighscoreDB.getTimes: failed: Cannot get times");
+      throw Exception("Cannot get times");
+    }
+  }
+
+  @override
+  Future<void> set(String layout, int time, String user) async {
     print(
         "CandidHighscoreDB.set: Calling set with layout: $layout and time: $time");
-    String user = "Ola";
+
     //callActorMethod with set_time
     await callActorMethod(CounterMethod.set_time, [layout, time, user]);
 
@@ -89,6 +140,11 @@ class CandidHighscoreDB extends IHighscoreDB {
 abstract class CounterMethod {
   static const get_times = "get_times";
   static const set_time = "set_time";
+  static const get_times_by_board = "get_times_by_board";
+
+  static final Leaderboard = IDL.Record({
+    'scores': IDL.Vec(IDL.Tuple([IDL.Nat32, IDL.Text])), // mtlk todo - record not needed
+  });
 
   /// you can copy/paste from .dfx/local/canisters/counter/counter.did.js
   static final ServiceClass idl = IDL.Service({
@@ -100,6 +156,8 @@ abstract class CounterMethod {
       ['query'],
     ),
     CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
+    CounterMethod.get_times_by_board:
+        IDL.Func([IDL.Text], [Leaderboard], ['query']),
   });
 }
 

@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
-import 'package:ed_mahjong/engine/highscore_storage.dart';
+import 'package:ed_mahjong/engine/highscore_storage.dart'
+    show ScoreEntry, highscoreDB;
 import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
@@ -20,6 +21,45 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/board.dart';
+
+class LeaderboardPage extends StatelessWidget {
+  static const Route = '/leaderboard';
+  String board_setup;
+  LeaderboardPage({Key? key, required String board_setup})
+      : board_setup = board_setup,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Leaderboard of $board_setup'),
+      ),
+      body: FutureBuilder<List<ScoreEntry>>(
+        future: highscoreDB.get_times_by_board(board_setup),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Text('${index + 1}'),
+                  title: Text(snapshot.data?[index].username ?? 'default'),
+                  trailing: Text((snapshot.data?[index].score ?? 0).toString()),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
+  }
+}
 
 class GamePage extends StatefulWidget {
   static const Route = '/game';
@@ -159,25 +199,55 @@ class _GamePageState extends State<GamePage> {
     int? existingTime = times[widget.layout];
     bool highScore = existingTime == null || existingTime > finalTime;
 
-    if (highScore) {
-      await highscoreDB.set(widget.layout, finalTime);
-    }
+    final TextEditingController _controller = TextEditingController();
+
+    String username = "";
 
     showDialog(
       context: this.context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
-            highScore
-                ? "Congratulations! You set a new best time: ${timeToString(finalTime)}"
-                : "You won!",
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              highScore
+                  ? Column(
+                      children: <Widget>[
+                        Text(
+                            "Congratulations! Yoou set a new best time: ${timeToString(finalTime)}"),
+                        TextField(
+                          controller: _controller,
+                          decoration:
+                              InputDecoration(hintText: 'Enter your name'),
+                        ),
+                      ],
+                    )
+                  : Text("You won!"),
+            ],
           ),
           actions: <Widget>[
             TextButton(
                 child: Text('Yay!'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  String username = _controller.text;
+                  // Store the username in your session here
+
+                  if (highScore) {
+                    String username = _controller.text;
+                    await highscoreDB.set(widget.layout, finalTime, username);
+                    //Navigate to /leaderboard
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LeaderboardPage(board_setup: widget.layout)));
+                  } else {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  }
                 }),
           ],
         );
@@ -368,7 +438,8 @@ class _GamePageState extends State<GamePage> {
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -401,8 +472,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   checkIsBoardSolveable() async {
-    
-    await showWinningDialog();// mtlk todo - remove this
+    await showWinningDialog(); // mtlk todo - remove this
     return;
 
     final board = this.board;
