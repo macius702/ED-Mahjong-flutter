@@ -24,14 +24,21 @@ class CandidHighscoreDB extends IHighscoreDB {
 
     var result = await callActorMethod<List<dynamic>>(CounterMethod.get_times);
     if (result != null) {
+      print("HighscoreStorage: Result is not null. Processing items...");
       Map<String, int> times = {};
       for (var item in result) {
+        print(
+            "HighscoreStorage: Processing item with key ${item[0]} and value ${item[1]}");
         times[item[0]] = item[1];
+        print("HighscoreStorage: Added item to times map.");
       }
-      print("CandidHighscoreDB.set: getTimes result: $times");
+      print(
+          "HighscoreStorage: Finished processing items. Returning times map.");
+
+      print("CandidHighscoreDB.getTimes: result: $times");
       return times;
     } else {
-      print("CandidHighscoreDB.set: getTimes failed: Cannot get times");
+      print("CandidHighscoreDB.getTimes: failed: Cannot get times");
       throw Exception("Cannot get times");
     }
   }
@@ -55,7 +62,7 @@ class CandidHighscoreDB extends IHighscoreDB {
   }
 
   List<Function()> callbacks = [];
-  @override
+
   onChange(Function() change) {
     callbacks.add(change);
   }
@@ -88,11 +95,11 @@ abstract class CounterMethod {
     CounterMethod.get_times: IDL.Func(
       [],
       [
-        IDL.Vec(IDL.Tuple([IDL.Text, IDL.Nat64]))
+        IDL.Vec(IDL.Tuple([IDL.Text, IDL.Nat32]))
       ], // Pass the types as a list
       ['query'],
     ),
-    CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat64], [], []),
+    CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32], [], []),
   });
 }
 
