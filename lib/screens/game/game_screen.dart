@@ -402,7 +402,8 @@ class _GamePageState extends State<GamePage> {
 
   checkIsBoardSolveable() async {
     
-    // await showWinningDialog();// mtlk todo - remove this
+    await showWinningDialog();// mtlk todo - remove this
+    return;
 
     final board = this.board;
     if (board == null) return;
