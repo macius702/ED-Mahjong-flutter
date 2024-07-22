@@ -47,9 +47,9 @@ class CandidHighscoreDB extends IHighscoreDB {
   Future<void> set(String layout, int time) async {
     print(
         "CandidHighscoreDB.set: Calling set with layout: $layout and time: $time");
-
+    String user = "Ola";
     //callActorMethod with set_time
-    await callActorMethod(CounterMethod.set_time, [layout, time]);
+    await callActorMethod(CounterMethod.set_time, [layout, time, user]);
 
     print(
         "CandidHighscoreDB.set: Finished calling set. Now calling callbacks...");
@@ -99,7 +99,7 @@ abstract class CounterMethod {
       ], // Pass the types as a list
       ['query'],
     ),
-    CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32], [], []),
+    CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
   });
 }
 
