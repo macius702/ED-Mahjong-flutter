@@ -88,15 +88,31 @@ class LeaderboardPage extends StatelessWidget {
         builder:
             (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Text('${index + 1}'),
-                  title: Text(snapshot.data?[index].username ?? 'default'),
-                  trailing: Text((snapshot.data?[index].score ?? 0).toString()),
-                );
-              },
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Text('Rank'),
+                  ),
+                  DataColumn(
+                    label: Text('Username'),
+                  ),
+                  DataColumn(
+                    label: Text('Time (secs)'),
+                  ),
+                ],
+                rows: List<DataRow>.generate(
+                  snapshot.data?.length ?? 0,
+                  (int index) => DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text('${index + 1}')),
+                      DataCell(Text(snapshot.data?[index].username ?? 'default')),
+                      DataCell(Text((snapshot.data?[index].score ?? 0).toString())),
+                    ],
+                  ),
+                ),
+              ),
             );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
