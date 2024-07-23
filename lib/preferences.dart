@@ -27,6 +27,8 @@ class Preferences {
   static const HighlightMovablesProp = "ed:mahjong:highlight_movables";
   static const ShufflesDefault = 1;
   static const HighlightMovablesPropDefault = true;
+  static const DeveloperShortenGameProp = "ed:mahjong:developer_shorten_game";
+  static const DeveloperShortenGameDefault = true;
   static const String? BackgroundDefault = null;
 
   String get tileset {
@@ -64,5 +66,14 @@ class Preferences {
 
   set highlightMovables(bool highlightMovables) {
     sharedPrefs.setBool(HighlightMovablesProp, highlightMovables);
+  }
+
+  bool get developerShortenGame {
+    return sharedPrefs.getBool(DeveloperShortenGameProp) ??
+        DeveloperShortenGameDefault;
+  }
+
+  set developerShortenGame(bool developerShortenGame) {
+    sharedPrefs.setBool(DeveloperShortenGameProp, developerShortenGame);
   }
 }

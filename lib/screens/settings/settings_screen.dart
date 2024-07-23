@@ -61,6 +61,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {});
                   },
                 ),
+                CheckboxListTile(
+                  title: Text("Developer option:shorten game to one tiles pair: "),
+                  value: preferences.developerShortenGame,
+                  onChanged: (val) {
+                    preferences.developerShortenGame = val ?? false;
+                    setState(() {});
+                  },
+                ),
                 ListTile(
                   title: Text("About"),
                   onTap: () {
