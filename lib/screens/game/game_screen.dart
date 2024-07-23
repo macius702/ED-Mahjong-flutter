@@ -90,20 +90,22 @@ class LeaderboardPage extends StatelessWidget {
       //majorMonoDisplay
       //zhiMangXing
       //longCang
-      // zcoolQingKeHuangYou - no 
+      // zcoolQingKeHuangYou - no
       // rubikWetPaint
       return GoogleFonts.rubikWetPaint(
         fontSize: 32,
+        color: Colors.black,
       );
-
     }
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-        'Leaderboard of $board_setup_display',
-        style: getTextStyle(),
-      )),
+        title: Text(
+          'Leaderboard of $board_setup_display',
+          style: getTextStyle(),
+        ),
+        backgroundColor: Colors.white,
+      ),
       body: FutureBuilder<List<ScoreEntry>>(
         future: highscoreDB.getTimesByBoard(board_setup),
         builder:
@@ -135,6 +137,18 @@ class LeaderboardPage extends StatelessWidget {
                 rows: List<DataRow>.generate(
                   snapshot.data?.length ?? 0,
                   (int index) => DataRow(
+                    color: MaterialStateProperty.resolveWith<Color?>(
+                        (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.selected))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(1);
+                      if (index.isOdd) {
+                        return Colors.white.withOpacity(1);
+                      }
+                      return null;
+                    }),
                     cells: <DataCell>[
                       DataCell(Text(
                         '${index + 1}',
