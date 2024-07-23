@@ -404,6 +404,22 @@ class _GamePageState extends State<GamePage> {
                   height: 0,
                 ),
                 FloatingActionButton(
+                  heroTag: "leaderboardBtn",
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LeaderboardPage(board_setup: widget.layout)));
+                  },
+                  tooltip: 'Leaderboard',
+                  child: Icon(Icons.leaderboard),
+                ),
+                Container(
+                  width: 20,
+                  height: 0,
+                ),
+                FloatingActionButton(
                   heroTag: "historyBtn",
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();
