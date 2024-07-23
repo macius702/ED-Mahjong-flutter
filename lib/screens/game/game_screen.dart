@@ -203,52 +203,72 @@ class _GamePageState extends State<GamePage> {
 
     String username = "";
 
+    final _formKey = GlobalKey<FormState>();
+
     showDialog(
       context: this.context,
       builder: (BuildContext context) {
+        void handleFormSubmission() async {
+          if (_formKey.currentState?.validate() ?? false) {
+            _formKey.currentState?.save();
+            // Store the username in your session here
+
+            if (highScore) {
+              await highscoreDB.set(widget.layout, finalTime, username);
+              //Navigate to /leaderboard
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      LeaderboardPage(board_setup: widget.layout),
+                ),
+              );
+            } else {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+          }
+        }
+
         return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              highScore
-                  ? Column(
-                      children: <Widget>[
-                        Text(
-                            "Congratulations! Yoou set a new best time: ${timeToString(finalTime)}"),
-                        TextField(
-                          controller: _controller,
-                          decoration:
-                              InputDecoration(hintText: 'Enter your name'),
-                        ),
-                      ],
-                    )
-                  : Text("You won!"),
-            ],
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                highScore
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                              "Congratulations! You set a new best time: ${timeToString(finalTime)}"),
+                          TextFormField(
+                            autofocus: true,
+                            onFieldSubmitted: (value) => handleFormSubmission(),
+                            controller: _controller,
+                            decoration:
+                                InputDecoration(hintText: 'Enter your name'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Name is required';
+                              }
+                              return null;
+                            },
+                            onSaved: (input) => username = input ?? "",
+                          ),
+                        ],
+                      )
+                    : Text("You won!"),
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
-                child: Text('Yay!'),
-                onPressed: () async {
-                  String username = _controller.text;
-                  // Store the username in your session here
-
-                  if (highScore) {
-                    String username = _controller.text;
-                    await highscoreDB.set(widget.layout, finalTime, username);
-                    //Navigate to /leaderboard
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                LeaderboardPage(board_setup: widget.layout)));
-                  } else {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  }
-                }),
+              child: Text('Yay!'),
+              onPressed: handleFormSubmission,
+            ),
           ],
         );
       },
