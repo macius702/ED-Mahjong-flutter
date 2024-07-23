@@ -195,10 +195,9 @@ class _GamePageState extends State<GamePage> {
   showWinningDialog() async {
     final finalTime =
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
-    final times = await highscoreDB.getTimes();
-    int? existingTime = times[widget.layout];
-    bool highScore = existingTime == null || existingTime > finalTime;
-
+    final List<ScoreEntry> entries = await highscoreDB.getTimesByBoard(widget.layout);
+    final isHighScore = entries.length < 10 || finalTime < entries.last.score;
+    final isBestTime = entries.length == 0 || finalTime < entries.first.score;
     final TextEditingController _controller = TextEditingController();
 
     String username = "";
@@ -213,7 +212,7 @@ class _GamePageState extends State<GamePage> {
             _formKey.currentState?.save();
             // Store the username in your session here
 
-            if (highScore) {
+            if (isHighScore) {
               await highscoreDB.set(widget.layout, finalTime, username);
               //Navigate to /leaderboard
               Navigator.of(context).pop();
@@ -239,11 +238,14 @@ class _GamePageState extends State<GamePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                highScore
+                isHighScore
                     ? Column(
                         children: <Widget>[
                           Text(
-                              "Congratulations! You set a new best time: ${timeToString(finalTime)}"),
+                            isBestTime
+                                ? "Congratulations! You set a new best time: ${timeToString(finalTime)}"
+                                : "Congratulations! You made it to the leaderboard with a time of ${timeToString(finalTime)}",
+                          ),
                           TextFormField(
                             autofocus: true,
                             onFieldSubmitted: (value) => handleFormSubmission(),
