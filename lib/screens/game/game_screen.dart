@@ -21,9 +21,9 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/board.dart';
+import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 
 import 'dart:async';
-
 
 class TimerText extends StatefulWidget {
   @override
@@ -69,20 +69,41 @@ class _TimerTextState extends State<TimerText> {
   }
 }
 
-
 class LeaderboardPage extends StatelessWidget {
   static const Route = '/leaderboard';
   String board_setup;
+  String board_setup_display;
   LeaderboardPage({Key? key, required String board_setup})
       : board_setup = board_setup,
+        board_setup_display =
+            board_setup.split('.').first, //take only before the dot
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextStyle getTextStyle() {
+      ////maShanZheng
+      ///eduVicWaNtBeginner
+      /////sevillana - no
+      ///bodoniModa - no
+      ///pacifico
+      //majorMonoDisplay
+      //zhiMangXing
+      //longCang
+      // zcoolQingKeHuangYou - no 
+      // rubikWetPaint
+      return GoogleFonts.rubikWetPaint(
+        fontSize: 32,
+      );
+
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Leaderboard of $board_setup'),
-      ),
+          title: Text(
+        'Leaderboard of $board_setup_display',
+        style: getTextStyle(),
+      )),
       body: FutureBuilder<List<ScoreEntry>>(
         future: highscoreDB.getTimesByBoard(board_setup),
         builder:
@@ -91,31 +112,53 @@ class LeaderboardPage extends StatelessWidget {
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                columns: const <DataColumn>[
+                columns: <DataColumn>[
                   DataColumn(
-                    label: Text('Rank'),
+                    label: Text(
+                      'Rank',
+                      style: getTextStyle(),
+                    ),
                   ),
                   DataColumn(
-                    label: Text('Username'),
+                    label: Text(
+                      'Username',
+                      style: getTextStyle(),
+                    ),
                   ),
                   DataColumn(
-                    label: Text('Time (secs)'),
+                    label: Text(
+                      'Time (secs)',
+                      style: getTextStyle(),
+                    ),
                   ),
                 ],
                 rows: List<DataRow>.generate(
                   snapshot.data?.length ?? 0,
                   (int index) => DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('${index + 1}')),
-                      DataCell(Text(snapshot.data?[index].username ?? 'default')),
-                      DataCell(Text((snapshot.data?[index].score ?? 0).toString())),
+                      DataCell(Text(
+                        '${index + 1}',
+                        style: getTextStyle(),
+                      )),
+                      DataCell(Text(
+                        snapshot.data?[index].username ?? 'default',
+                        style: getTextStyle(),
+                      )),
+                      DataCell(Text(
+                        ((snapshot.data?[index].score ?? 0) / 1000)
+                            .toStringAsFixed(2),
+                        style: getTextStyle(),
+                      )),
                     ],
                   ),
                 ),
               ),
             );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Text(
+              'Error: ${snapshot.error}',
+              style: getTextStyle(),
+            );
           } else {
             return CircularProgressIndicator();
           }
@@ -259,7 +302,8 @@ class _GamePageState extends State<GamePage> {
   showWinningDialog() async {
     final finalTime =
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
-    final List<ScoreEntry> entries = await highscoreDB.getTimesByBoard(widget.layout);
+    final List<ScoreEntry> entries =
+        await highscoreDB.getTimesByBoard(widget.layout);
     final isHighScore = entries.length < 10 || finalTime < entries.last.score;
     final isBestTime = entries.length == 0 || finalTime < entries.first.score;
     final TextEditingController _controller = TextEditingController();
@@ -410,82 +454,78 @@ class _GamePageState extends State<GamePage> {
               history: history,
               restore: restore,
             ),
-      body: Stack (
-        children: [
+      body: Stack(children: [
         renderBackground(
-        Center(
-            child: board == null
-                ? Text("Loading...")
-                : Board(
-                    shuffleId: shuffleId,
-                    board: board!,
-                    meta: layoutMeta!,
-                    selectedX: selectedX,
-                    selectedY: selectedY,
-                    selectedZ: selectedZ,
-                    tileAnimationLayer: tileAnimationLayer!,
-                    onSelected: (x, y, z) {
-                      final board = this.board!;
-                      final oldSelectedX = this.selectedX;
-                      final oldSelectedY = this.selectedY;
-                      final oldSelectedZ = this.selectedZ;
+          Center(
+              child: board == null
+                  ? Text("Loading...")
+                  : Board(
+                      shuffleId: shuffleId,
+                      board: board!,
+                      meta: layoutMeta!,
+                      selectedX: selectedX,
+                      selectedY: selectedY,
+                      selectedZ: selectedZ,
+                      tileAnimationLayer: tileAnimationLayer!,
+                      onSelected: (x, y, z) {
+                        final board = this.board!;
+                        final oldSelectedX = this.selectedX;
+                        final oldSelectedY = this.selectedY;
+                        final oldSelectedZ = this.selectedZ;
 
-                      if (x == oldSelectedX &&
-                          y == oldSelectedY &&
-                          z == oldSelectedZ) return;
+                        if (x == oldSelectedX &&
+                            y == oldSelectedY &&
+                            z == oldSelectedZ) return;
 
-                      final coord = Coordinate(x, y, z);
-                      if (!board.movable.contains(coord)) return;
+                        final coord = Coordinate(x, y, z);
+                        if (!board.movable.contains(coord)) return;
 
-                      if (oldSelectedX == null ||
-                          oldSelectedY == null ||
-                          oldSelectedZ == null) {
-                        setSelectedCoord(x, y, z);
-                        return;
-                      }
+                        if (oldSelectedX == null ||
+                            oldSelectedY == null ||
+                            oldSelectedZ == null) {
+                          setSelectedCoord(x, y, z);
+                          return;
+                        }
 
-                      final selected =
-                          board.tiles[oldSelectedZ][oldSelectedY][oldSelectedX];
-                      final newTile = board.tiles[z][y][x];
+                        final selected = board.tiles[oldSelectedZ][oldSelectedY]
+                            [oldSelectedX];
+                        final newTile = board.tiles[z][y][x];
 
-                      if (selected != null &&
-                          newTile != null &&
-                          tilesMatch(selected, newTile)) {
-                        setState(() {
-                          final oldCoord = Coordinate(
-                              oldSelectedX, oldSelectedY, oldSelectedZ);
-                          final newCoord = Coordinate(x, y, z);
-                          history.add(HistoryState(
-                              selected, oldCoord, newTile, newCoord));
+                        if (selected != null &&
+                            newTile != null &&
+                            tilesMatch(selected, newTile)) {
+                          setState(() {
+                            final oldCoord = Coordinate(
+                                oldSelectedX, oldSelectedY, oldSelectedZ);
+                            final newCoord = Coordinate(x, y, z);
+                            history.add(HistoryState(
+                                selected, oldCoord, newTile, newCoord));
 
-                          board.update((tiles) {
-                            tileAnimationLayer!.createAnimation(selected,
-                                oldCoord, getTileDirection(board, oldCoord));
-                            tileAnimationLayer.createAnimation(newTile,
-                                newCoord, getTileDirection(board, newCoord));
-                            tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
-                                null;
-                            tiles[z][y][x] = null;
+                            board.update((tiles) {
+                              tileAnimationLayer!.createAnimation(selected,
+                                  oldCoord, getTileDirection(board, oldCoord));
+                              tileAnimationLayer.createAnimation(newTile,
+                                  newCoord, getTileDirection(board, newCoord));
+                              tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
+                                  null;
+                              tiles[z][y][x] = null;
+                            });
                           });
-                        });
 
-                        checkIsBoardSolveable();
-                        setSelectedCoord(null, null, null);
-                      } else {
-                        setSelectedCoord(x, y, z);
-                      }
-                    },
-                  )),
-          ),
-             Positioned(
-        top: 10,
-        right: 50,
-        child: TimerText(),
-
+                          checkIsBoardSolveable();
+                          setSelectedCoord(null, null, null);
+                        } else {
+                          setSelectedCoord(x, y, z);
+                        }
+                      },
+                    )),
         ),
-      
-        ]
-      ),
+        Positioned(
+          top: 10,
+          right: 50,
+          child: TimerText(),
+        ),
+      ]),
       floatingActionButton: Builder(
           builder: (context) => Row(mainAxisSize: MainAxisSize.min, children: [
                 FloatingActionButton(
