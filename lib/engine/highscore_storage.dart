@@ -16,7 +16,7 @@ class ScoreEntry {
 abstract class IHighscoreDB {
   Future<Map<String, int>> getTimes();
   Future<void> set(String layout, int time, String user);
-  Future<List<ScoreEntry>> get_times_by_board(String layout);
+  Future<List<ScoreEntry>> getTimesByBoard(String layout);
 }
 
 class CandidHighscoreDB extends IHighscoreDB {
@@ -52,7 +52,7 @@ class CandidHighscoreDB extends IHighscoreDB {
   }
 
   @override
-  Future<List<ScoreEntry>> get_times_by_board(String layout) async {
+  Future<List<ScoreEntry>> getTimesByBoard(String layout) async {
     print("Calling CandidHighscoreDB.set: getTimes ...");
 
     var r = await callActorMethod<Map<dynamic, dynamic>>(
@@ -143,7 +143,8 @@ abstract class CounterMethod {
   static const get_times_by_board = "get_times_by_board";
 
   static final Leaderboard = IDL.Record({
-    'scores': IDL.Vec(IDL.Tuple([IDL.Nat32, IDL.Text])), // mtlk todo - record not needed
+    'scores': IDL.Vec(
+        IDL.Tuple([IDL.Nat32, IDL.Text])), // mtlk todo - record not needed
   });
 
   /// you can copy/paste from .dfx/local/canisters/counter/counter.did.js

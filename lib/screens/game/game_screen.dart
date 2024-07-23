@@ -36,7 +36,7 @@ class LeaderboardPage extends StatelessWidget {
         title: Text('Leaderboard of $board_setup'),
       ),
       body: FutureBuilder<List<ScoreEntry>>(
-        future: highscoreDB.get_times_by_board(board_setup),
+        future: highscoreDB.getTimesByBoard(board_setup),
         builder:
             (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
           if (snapshot.hasData) {
