@@ -28,7 +28,7 @@ class Preferences {
   static const ShufflesDefault = 1;
   static const HighlightMovablesPropDefault = true;
   static const DeveloperShortenGameProp = "ed:mahjong:developer_shorten_game";
-  static const DeveloperShortenGameDefault = true;
+  static const DeveloperShortenGameDefault = false;
   static const String? BackgroundDefault = null;
 
   String get tileset {
