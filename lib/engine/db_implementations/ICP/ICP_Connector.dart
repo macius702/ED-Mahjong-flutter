@@ -74,11 +74,12 @@ class ICPconnector {
 String frontend_url = '';
 
 String get_frontend_url() {
-  return mode == Mode.playground
+  return 
+      mode == Mode.playground
       ? 'https://icp-api.io'
       : mode == Mode.local
           ? kIsWeb
               ? 'http://127.0.0.1:4943'
               : 'http://10.0.2.2:4943' // for android emulator
-          : 'todo'; // for Mode.network
+          : 'https://icp-api.io'; // for Mode.network
 }
