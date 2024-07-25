@@ -4,9 +4,11 @@ packages:
   agent_dart:
     dependency: "direct main"
     description:
-      path: "/home/maciej/mydes2/ICP_Dart/agent_dart"
-      relative: false
-    source: path
+      path: "."
+      ref: main
+      resolved-ref: ce59888f92375e133d1640b8d1b25c8e4a7882b3
+      url: "git@github.com:macius702/agent_dart.git"
+    source: git
     version: "0.1.24+102"
   archive:
     dependency: "direct main"
