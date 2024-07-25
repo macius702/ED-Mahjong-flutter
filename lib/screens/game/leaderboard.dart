@@ -39,76 +39,83 @@ class LeaderboardPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
       ),
-      body: FutureBuilder<List<ScoreEntry>>(
-        future: highscoreDB.getTimesByBoard(board_setup),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: <DataColumn>[
-                  DataColumn(
-                    label: Text(
-                      'Rank',
-                      style: getTextStyle(),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Username',
-                      style: getTextStyle(),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Time (secs)',
-                      style: getTextStyle(),
-                    ),
-                  ),
-                ],
-                rows: List<DataRow>.generate(
-                  snapshot.data?.length ?? 0,
-                  (int index) => DataRow(
-                    color: MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(1);
-                      if (index.isOdd) {
-                        return Colors.white.withOpacity(1);
-                      }
-                      return null;
-                    }),
-                    cells: <DataCell>[
-                      DataCell(Text(
-                        '${index + 1}',
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
+              fit: BoxFit.cover),
+        ),
+        child: FutureBuilder<List<ScoreEntry>>(
+          future: highscoreDB.getTimesByBoard(board_setup),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: <DataColumn>[
+                    DataColumn(
+                      label: Text(
+                        'Rank',
                         style: getTextStyle(),
-                      )),
-                      DataCell(Text(
-                        snapshot.data?[index].username ?? 'default',
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Username',
                         style: getTextStyle(),
-                      )),
-                      DataCell(Text(
-                        _fomatToMinSec(snapshot.data?[index].score ?? 0),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Time (secs)',
                         style: getTextStyle(),
-                      )),
-                    ],
+                      ),
+                    ),
+                  ],
+                  rows: List<DataRow>.generate(
+                    snapshot.data?.length ?? 0,
+                    (int index) => DataRow(
+                      color: MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected))
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(1);
+                        if (index.isOdd) {
+                          return Colors.white.withOpacity(1);
+                        }
+                        return null;
+                      }),
+                      cells: <DataCell>[
+                        DataCell(Text(
+                          '${index + 1}',
+                          style: getTextStyle(),
+                        )),
+                        DataCell(Text(
+                          snapshot.data?[index].username ?? 'default',
+                          style: getTextStyle(),
+                        )),
+                        DataCell(Text(
+                          _fomatToMinSec(snapshot.data?[index].score ?? 0),
+                          style: getTextStyle(),
+                        )),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text(
-              'Error: ${snapshot.error}',
-              style: getTextStyle(),
-            );
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
+              );
+            } else if (snapshot.hasError) {
+              return Text(
+                'Error: ${snapshot.error}',
+                style: getTextStyle(),
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }
