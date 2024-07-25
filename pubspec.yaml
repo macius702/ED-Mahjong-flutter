@@ -57,6 +57,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: Anudaw
+      fonts:
+        - asset: assets/fonts/ANUDI___.ttf
+        - asset: assets/fonts/ANUDRG__.ttf
+        
+
+
   assets:
      - assets/tilesets/
      - assets/tilesets/alphabet/

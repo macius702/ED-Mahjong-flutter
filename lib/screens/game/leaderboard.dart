@@ -15,19 +15,11 @@ class LeaderboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle getTextStyle() {
-      ////maShanZheng
-      ///eduVicWaNtBeginner
-      /////sevillana - no
-      ///bodoniModa - no
-      ///pacifico
-      //majorMonoDisplay
-      //zhiMangXing
-      //longCang
-      // zcoolQingKeHuangYou - no
-      // rubikWetPaint
-      return GoogleFonts.pacifico(
-        fontSize: 32,
+      return TextStyle(
+        fontFamily: 'Anudaw',
         color: Colors.black,
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
       );
     }
 
