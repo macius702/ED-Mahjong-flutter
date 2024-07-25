@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LeaderboardPage extends StatelessWidget {
   static const Route = '/leaderboard';
-  String board_setup;
-  String board_setup_display;
+  final String board_setup;
+  final String board_setup_display;
   LeaderboardPage({Key? key, required String board_setup})
       : board_setup = board_setup,
         board_setup_display =
