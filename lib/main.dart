@@ -17,7 +17,7 @@ import 'screens/settings/settings_screen.dart';
 void main() async {
   registerLicences();
 
-  final icpConnector = await ICPconnector.init(newIdl: CounterMethod.idl);
+  final icpConnector = await ICPconnector.init(newIdl: BackendMethod.idl);
   
 
   highscoreDB = CandidHighscoreDB(icpConnector);

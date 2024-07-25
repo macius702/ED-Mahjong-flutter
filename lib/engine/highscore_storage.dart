@@ -30,7 +30,7 @@ class CandidHighscoreDB extends IHighscoreDB {
   Future<Map<String, int>> getTimes() async {
     print("Calling CandidHighscoreDB.set: getTimes ...");
 
-    var result = await callActorMethod<List<dynamic>>(CounterMethod.get_times);
+    var result = await callActorMethod<List<dynamic>>(BackendMethod.get_times);
     if (result != null) {
       print("HighscoreStorage: Result is not null. Processing items...");
       Map<String, int> times = {};
@@ -56,7 +56,7 @@ class CandidHighscoreDB extends IHighscoreDB {
     print("Calling CandidHighscoreDB.set: getTimes ...");
 
     var r = await callActorMethod<Map<dynamic, dynamic>>(
-        CounterMethod.get_times_by_board, [layout]);
+        BackendMethod.get_times_by_board, [layout]);
 
     // result is record {scores: []}
     // result is one element Map
@@ -100,7 +100,7 @@ class CandidHighscoreDB extends IHighscoreDB {
         "CandidHighscoreDB.set: Calling set with layout: $layout and time: $time");
 
     //callActorMethod with set_time
-    await callActorMethod(CounterMethod.set_time, [layout, time, user]);
+    await callActorMethod(BackendMethod.set_time, [layout, time, user]);
 
     print(
         "CandidHighscoreDB.set: Finished calling set. Now calling callbacks...");
@@ -137,7 +137,7 @@ class CandidHighscoreDB extends IHighscoreDB {
   }
 }
 
-abstract class CounterMethod {
+abstract class BackendMethod {
   static const get_times = "get_times";
   static const set_time = "set_time";
   static const get_times_by_board = "get_times_by_board";
@@ -149,15 +149,15 @@ abstract class CounterMethod {
 
   /// you can copy/paste from .dfx/local/canisters/counter/counter.did.js
   static final ServiceClass idl = IDL.Service({
-    CounterMethod.get_times: IDL.Func(
+    BackendMethod.get_times: IDL.Func(
       [],
       [
         IDL.Vec(IDL.Tuple([IDL.Text, IDL.Nat32]))
       ], // Pass the types as a list
       ['query'],
     ),
-    CounterMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
-    CounterMethod.get_times_by_board:
+    BackendMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
+    BackendMethod.get_times_by_board:
         IDL.Func([IDL.Text], [Leaderboard], ['query']),
   });
 }
