@@ -43,49 +43,51 @@ class LeaderboardPage extends StatelessWidget {
               (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
             if (snapshot.hasData) {
               return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        'Rank',
-                        style: getTextStyle(),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Username',
-                        style: getTextStyle(),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Time (secs)',
-                        style: getTextStyle(),
-                      ),
-                    ),
-                  ],
-                  rows: List<DataRow>.generate(
-                    snapshot.data?.length ?? 0,
-                    (int index) => DataRow(
-                      cells: <DataCell>[
-                        DataCell(Text(
-                          '${index + 1}',
-                          style: getTextStyle(),
-                        )),
-                        DataCell(Text(
-                          snapshot.data?[index].username ?? 'default',
-                          style: getTextStyle(),
-                        )),
-                        DataCell(Text(
-                          _fomatToMinSec(snapshot.data?[index].score ?? 0),
-                          style: getTextStyle(),
-                        )),
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            'Rank',
+                            style: getTextStyle(),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Username',
+                            style: getTextStyle(),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Time (secs)',
+                            style: getTextStyle(),
+                          ),
+                        ),
                       ],
+                      rows: List<DataRow>.generate(
+                        snapshot.data?.length ?? 0,
+                        (int index) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(
+                              '${index + 1}',
+                              style: getTextStyle(),
+                            )),
+                            DataCell(Text(
+                              snapshot.data?[index].username ?? 'default',
+                              style: getTextStyle(),
+                            )),
+                            DataCell(Text(
+                              _fomatToMinSec(snapshot.data?[index].score ?? 0),
+                              style: getTextStyle(),
+                            )),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
+                  ));
             } else if (snapshot.hasError) {
               return Text(
                 'Error: ${snapshot.error}',
