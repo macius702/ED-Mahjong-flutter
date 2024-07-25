@@ -76,18 +76,6 @@ class LeaderboardPage extends StatelessWidget {
                   rows: List<DataRow>.generate(
                     snapshot.data?.length ?? 0,
                     (int index) => DataRow(
-                      color: MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected))
-                          return Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(1);
-                        if (index.isOdd) {
-                          return Colors.white.withOpacity(1);
-                        }
-                        return null;
-                      }),
                       cells: <DataCell>[
                         DataCell(Text(
                           '${index + 1}',
