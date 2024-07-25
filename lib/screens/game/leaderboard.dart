@@ -23,21 +23,23 @@ class LeaderboardPage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '$board_setup_display layout leaders',
-          style: getTextStyle(),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
+          fit: BoxFit.cover,
         ),
-        backgroundColor: Colors.white,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
-              fit: BoxFit.cover),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text(
+            '$board_setup_display layout leaders',
+            style: getTextStyle(),
+          ),
+          //backgroundColor: Colors.white,
         ),
-        child: FutureBuilder<List<ScoreEntry>>(
+        body: FutureBuilder<List<ScoreEntry>>(
           future: highscoreDB.getTimesByBoard(board_setup),
           builder:
               (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
