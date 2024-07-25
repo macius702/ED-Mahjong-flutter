@@ -94,8 +94,7 @@ class LeaderboardPage extends StatelessWidget {
                         style: getTextStyle(),
                       )),
                       DataCell(Text(
-                        ((snapshot.data?[index].score ?? 0) / 1000)
-                            .toStringAsFixed(2),
+                        _fomatToMinSec(snapshot.data?[index].score ?? 0),
                         style: getTextStyle(),
                       )),
                     ],
@@ -115,4 +114,12 @@ class LeaderboardPage extends StatelessWidget {
       ),
     );
   }
+}
+
+String _fomatToMinSec(int score) {
+  Duration duration = Duration(milliseconds: score);
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitsFraction(int n) =>
+      n.toString().padLeft(2, "0").substring(0, 2);
+  return "${twoDigits(duration.inMinutes.remainder(60))}:${twoDigits(duration.inSeconds.remainder(60))}.${twoDigitsFraction(duration.inMilliseconds.remainder(1000) ~/ 10)}";
 }
