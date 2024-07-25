@@ -153,7 +153,7 @@ abstract class BackendMethod {
       [],
       [
         IDL.Vec(IDL.Tuple([IDL.Text, IDL.Nat32]))
-      ], // Pass the types as a list
+      ],
       ['query'],
     ),
     BackendMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
