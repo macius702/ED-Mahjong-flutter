@@ -1,5 +1,3 @@
-
-
 import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,9 +9,9 @@ class LeaderboardPage extends StatelessWidget {
   LeaderboardPage({Key? key, required String board_setup})
       : board_setup = board_setup,
         board_setup_display =
-            board_setup.split('.').first, //take only before the dot
-        super(key: key);
+            "${board_setup.split('.').first[0].toUpperCase()}${board_setup.split('.').first.substring(1)}", //take only before the dot
 
+        super(key: key);
   @override
   Widget build(BuildContext context) {
     TextStyle getTextStyle() {
@@ -27,7 +25,7 @@ class LeaderboardPage extends StatelessWidget {
       //longCang
       // zcoolQingKeHuangYou - no
       // rubikWetPaint
-      return GoogleFonts.rubikWetPaint(
+      return GoogleFonts.pacifico(
         fontSize: 32,
         color: Colors.black,
       );
@@ -36,7 +34,7 @@ class LeaderboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Leaderboard of $board_setup_display',
+          '$board_setup_display layout leaders',
           style: getTextStyle(),
         ),
         backgroundColor: Colors.white,
