@@ -214,6 +214,8 @@ class _GamePageState extends State<GamePage> {
   int maxShuffles = -1;
   int shuffleId = 0;
 
+  bool _isLoading = false;
+
   _GamePageState();
 
   @override
@@ -332,11 +334,20 @@ class _GamePageState extends State<GamePage> {
         void handleFormSubmission() async {
           if (_formKey.currentState?.validate() ?? false) {
             _formKey.currentState?.save();
-            // Store the username in your session here
+            // Store the username in session here, use hourglass (CircularProgressIndicator) to show loading
 
             if (isHighScore) {
+              setState(() {
+                print("Setting state to loading");
+                this._isLoading = true;
+              });
+
               await highscoreDB.set(widget.layout, finalTime, username);
               //Navigate to /leaderboard
+              setState(() {
+                print("Setting state to not loading");
+                this._isLoading = false;
+              });
               Navigator.of(context).pop();
               Navigator.of(context).pop();
 
@@ -472,72 +483,77 @@ class _GamePageState extends State<GamePage> {
         renderBackground(
           Center(
               child: board == null
-                  ? Text("Loading...")
-                  :
-                    InteractiveViewer(  //boundaryMargin: EdgeInsets.all(0.0),
+                  ? (_isLoading
+                      ? CircularProgressIndicator()
+                      : Text("Loading..."))
+                  : InteractiveViewer(
+                      //boundaryMargin: EdgeInsets.all(0.0),
                       minScale: 1,
                       maxScale: 2,
-                      child  : Board(
-                          shuffleId: shuffleId,
-                          board: board!,
-                          meta: layoutMeta!,
-                          selectedX: selectedX,
-                          selectedY: selectedY,
-                          selectedZ: selectedZ,
-                          tileAnimationLayer: tileAnimationLayer!,
-                          onSelected: (x, y, z) {
-                            final board = this.board!;
-                            final oldSelectedX = this.selectedX;
-                            final oldSelectedY = this.selectedY;
-                            final oldSelectedZ = this.selectedZ;
+                      child: Board(
+                        shuffleId: shuffleId,
+                        board: board!,
+                        meta: layoutMeta!,
+                        selectedX: selectedX,
+                        selectedY: selectedY,
+                        selectedZ: selectedZ,
+                        tileAnimationLayer: tileAnimationLayer!,
+                        onSelected: (x, y, z) {
+                          final board = this.board!;
+                          final oldSelectedX = this.selectedX;
+                          final oldSelectedY = this.selectedY;
+                          final oldSelectedZ = this.selectedZ;
 
-                            if (x == oldSelectedX &&
-                                y == oldSelectedY &&
-                                z == oldSelectedZ) return;
+                          if (x == oldSelectedX &&
+                              y == oldSelectedY &&
+                              z == oldSelectedZ) return;
 
-                            final coord = Coordinate(x, y, z);
-                            if (!board.movable.contains(coord)) return;
+                          final coord = Coordinate(x, y, z);
+                          if (!board.movable.contains(coord)) return;
 
-                            if (oldSelectedX == null ||
-                                oldSelectedY == null ||
-                                oldSelectedZ == null) {
-                              setSelectedCoord(x, y, z);
-                              return;
-                            }
+                          if (oldSelectedX == null ||
+                              oldSelectedY == null ||
+                              oldSelectedZ == null) {
+                            setSelectedCoord(x, y, z);
+                            return;
+                          }
 
-                            final selected = board.tiles[oldSelectedZ][oldSelectedY]
-                                [oldSelectedX];
-                            final newTile = board.tiles[z][y][x];
+                          final selected = board.tiles[oldSelectedZ]
+                              [oldSelectedY][oldSelectedX];
+                          final newTile = board.tiles[z][y][x];
 
-                            if (selected != null &&
-                                newTile != null &&
-                                tilesMatch(selected, newTile)) {
-                              setState(() {
-                                final oldCoord = Coordinate(
-                                    oldSelectedX, oldSelectedY, oldSelectedZ);
-                                final newCoord = Coordinate(x, y, z);
-                                history.add(HistoryState(
-                                    selected, oldCoord, newTile, newCoord));
+                          if (selected != null &&
+                              newTile != null &&
+                              tilesMatch(selected, newTile)) {
+                            setState(() {
+                              final oldCoord = Coordinate(
+                                  oldSelectedX, oldSelectedY, oldSelectedZ);
+                              final newCoord = Coordinate(x, y, z);
+                              history.add(HistoryState(
+                                  selected, oldCoord, newTile, newCoord));
 
-                                board.update((tiles) {
-                                  tileAnimationLayer!.createAnimation(selected,
-                                      oldCoord, getTileDirection(board, oldCoord));
-                                  tileAnimationLayer.createAnimation(newTile,
-                                      newCoord, getTileDirection(board, newCoord));
-                                  tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
-                                      null;
-                                  tiles[z][y][x] = null;
-                                });
+                              board.update((tiles) {
+                                tileAnimationLayer!.createAnimation(
+                                    selected,
+                                    oldCoord,
+                                    getTileDirection(board, oldCoord));
+                                tileAnimationLayer.createAnimation(
+                                    newTile,
+                                    newCoord,
+                                    getTileDirection(board, newCoord));
+                                tiles[oldSelectedZ][oldSelectedY]
+                                    [oldSelectedX] = null;
+                                tiles[z][y][x] = null;
                               });
+                            });
 
-                              checkIsBoardSolveable();
-                              setSelectedCoord(null, null, null);
-                            } else {
-                              setSelectedCoord(x, y, z);
-                            }
-                          },
-                        )
-                  )),
+                            checkIsBoardSolveable();
+                            setSelectedCoord(null, null, null);
+                          } else {
+                            setSelectedCoord(x, y, z);
+                          }
+                        },
+                      ))),
         ),
         Positioned(
           top: 10,
