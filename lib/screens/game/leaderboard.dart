@@ -1,6 +1,5 @@
 import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LeaderboardPage extends StatelessWidget {
   static const Route = '/leaderboard';

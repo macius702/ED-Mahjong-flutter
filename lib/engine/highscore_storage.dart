@@ -4,8 +4,6 @@ import 'package:agent_dart/agent_dart.dart';
 
 import 'db_implementations/ICP/ICP_Connector.dart';
 
-import 'db_implementations/ICP/config.dart' show backendCanisterId, Mode, mode;
-
 class ScoreEntry {
   final String username;
   final int score;

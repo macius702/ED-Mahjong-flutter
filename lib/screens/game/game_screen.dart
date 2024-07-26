@@ -23,7 +23,6 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/board.dart';
-import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 
 import 'dart:async';
 
