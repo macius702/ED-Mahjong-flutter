@@ -1,4 +1,6 @@
-import 'package:ed_mahjong/engine/highscore_storage.dart';
+import 'package:ed_mahjong/engine/highscore_storage.dart'
+    show ScoreEntry, highscoreDB;
+import 'package:ed_mahjong/preferences.dart' show MAX_LEADERBOARD_ENTRIES;
 import 'package:flutter/material.dart';
 
 class LeaderboardPage extends StatelessWidget {
@@ -69,7 +71,7 @@ class LeaderboardPage extends StatelessWidget {
                         ),
                       ],
                       rows: List<DataRow>.generate(
-                        snapshot.data?.length ?? 0,
+                        MAX_LEADERBOARD_ENTRIES,
                         (int index) => DataRow(
                           cells: <DataCell>[
                             DataCell(Text(
@@ -77,11 +79,11 @@ class LeaderboardPage extends StatelessWidget {
                               style: getTextStyle(),
                             )),
                             DataCell(Text(
-                              snapshot.data?[index].username ?? 'default',
+                              _getData(snapshot, index, 'username'),
                               style: getTextStyle(),
-                            )),
+                              )),
                             DataCell(Text(
-                              _fomatToMinSec(snapshot.data?[index].score ?? 0),
+                              index < (snapshot.data?.length ?? 0) ? _fomatToMinSec(int.parse(_getData(snapshot, index, 'score'))) : '',
                               style: getTextStyle(),
                             )),
                           ],
@@ -110,4 +112,21 @@ String _fomatToMinSec(int score) {
   String twoDigitsFraction(int n) =>
       n.toString().padLeft(2, "0").substring(0, 2);
   return "${twoDigits(duration.inMinutes.remainder(60))}:${twoDigits(duration.inSeconds.remainder(60))}.${twoDigitsFraction(duration.inMilliseconds.remainder(1000) ~/ 10)}";
+}
+
+String _getData(AsyncSnapshot<List<ScoreEntry>> snapshot, int index, String key) {
+  if (index >= (snapshot.data?.length ?? 0)) {
+    return '';
+  }
+
+  var entry = snapshot.data?[index];
+
+  switch (key) {
+    case 'username':
+      return entry?.username ?? '';
+    case 'score':
+      return entry?.score.toString() ?? '';
+    default:
+      return '';
+  }
 }

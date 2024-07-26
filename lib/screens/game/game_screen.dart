@@ -26,7 +26,6 @@ import '../../widgets/board.dart';
 
 import 'dart:async';
 
-const MAX_LEADERBOARD_ENTRIES = 10;
 
 class GamePage extends StatefulWidget {
   static const Route = '/game';

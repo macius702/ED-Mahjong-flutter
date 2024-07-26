@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+const MAX_LEADERBOARD_ENTRIES = 10;
+
 class Preferences {
   static Future<Preferences>? _instanceFuture;
 
