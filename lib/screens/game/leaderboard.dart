@@ -2,11 +2,14 @@ import 'package:ed_mahjong/engine/highscore_storage.dart'
     show ScoreEntry, highscoreDB;
 import 'package:ed_mahjong/preferences.dart' show MAX_LEADERBOARD_ENTRIES;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show KeyDownEvent, LogicalKeyboardKey;
 
 class LeaderboardPage extends StatelessWidget {
   static const Route = '/leaderboard';
   final String board_layout;
   final String board_layout_display;
+  final FocusNode _focusNode = FocusNode();
+
   LeaderboardPage({Key? key, required String board_layout})
       : board_layout = board_layout,
         board_layout_display =
@@ -24,7 +27,18 @@ class LeaderboardPage extends StatelessWidget {
       );
     }
 
-    return Container(
+    return KeyboardListener(
+        autofocus: true,
+        focusNode: _focusNode,
+        onKeyEvent: (event) {
+          print('onKeyEvent');
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.backspace) {
+            print('Backspace key pressed');
+            Navigator.of(context).pop();
+          }
+        },
+        child: Container(
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
@@ -102,7 +116,7 @@ class LeaderboardPage extends StatelessWidget {
           },
         ),
       ),
-    );
+        ));
   }
 }
 
