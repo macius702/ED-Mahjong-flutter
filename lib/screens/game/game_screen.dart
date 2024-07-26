@@ -327,79 +327,90 @@ class _GamePageState extends State<GamePage> {
       body: Stack(children: [
         renderBackground(
           Center(
-              child: board == null
-                  ? (_isLoading
-                      ? CircularProgressIndicator()
-                      : Text("Loading..."))
-                  : InteractiveViewer(
-                      //boundaryMargin: EdgeInsets.all(0.0),
-                      minScale: 1,
-                      maxScale: 2,
-                      child: Board(
-                        shuffleId: shuffleId,
-                        board: board!,
-                        meta: layoutMeta!,
-                        selectedX: selectedX,
-                        selectedY: selectedY,
-                        selectedZ: selectedZ,
-                        tileAnimationLayer: tileAnimationLayer!,
-                        onSelected: (x, y, z) {
-                          final board = this.board!;
-                          final oldSelectedX = this.selectedX;
-                          final oldSelectedY = this.selectedY;
-                          final oldSelectedZ = this.selectedZ;
+            child: board == null
+                ? (_isLoading
+                    ? CircularProgressIndicator()
+                    : Text("Loading..."))
+                : // Layoutuilder : SizedBox : InteractiveViewer : Board
+                // LayoutBuilder to grab constraints and put them to SizedBox
+                LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      // double fontSize =
+                      //     min(constraints.maxWidth, constraints.maxHeight) / 10;
+                      return SizedBox(
+                          width: constraints.maxWidth,
+                          height: constraints.maxHeight,
+                          child: InteractiveViewer(
+                              //boundaryMargin: EdgeInsets.all(0.0),
+                              minScale: 1,
+                              maxScale: 2,
+                              child: Board(
+                                shuffleId: shuffleId,
+                                board: board!,
+                                meta: layoutMeta!,
+                                selectedX: selectedX,
+                                selectedY: selectedY,
+                                selectedZ: selectedZ,
+                                tileAnimationLayer: tileAnimationLayer!,
+                                onSelected: (x, y, z) {
+                                  final board = this.board!;
+                                  final oldSelectedX = this.selectedX;
+                                  final oldSelectedY = this.selectedY;
+                                  final oldSelectedZ = this.selectedZ;
 
-                          if (x == oldSelectedX &&
-                              y == oldSelectedY &&
-                              z == oldSelectedZ) return;
+                                  if (x == oldSelectedX &&
+                                      y == oldSelectedY &&
+                                      z == oldSelectedZ) return;
 
-                          final coord = Coordinate(x, y, z);
-                          if (!board.movable.contains(coord)) return;
+                                  final coord = Coordinate(x, y, z);
+                                  if (!board.movable.contains(coord)) return;
 
-                          if (oldSelectedX == null ||
-                              oldSelectedY == null ||
-                              oldSelectedZ == null) {
-                            setSelectedCoord(x, y, z);
-                            return;
-                          }
+                                  if (oldSelectedX == null ||
+                                      oldSelectedY == null ||
+                                      oldSelectedZ == null) {
+                                    setSelectedCoord(x, y, z);
+                                    return;
+                                  }
 
-                          final selected = board.tiles[oldSelectedZ]
-                              [oldSelectedY][oldSelectedX];
-                          final newTile = board.tiles[z][y][x];
+                                  final selected = board.tiles[oldSelectedZ]
+                                      [oldSelectedY][oldSelectedX];
+                                  final newTile = board.tiles[z][y][x];
 
-                          if (selected != null &&
-                              newTile != null &&
-                              tilesMatch(selected, newTile)) {
-                            setState(() {
+                                  if (selected != null &&
+                                      newTile != null &&
+                                      tilesMatch(selected, newTile)) {
+                                    setState(() {
                                       final oldCoord = Coordinate(oldSelectedX,
                                           oldSelectedY, oldSelectedZ);
-                              final newCoord = Coordinate(x, y, z);
+                                      final newCoord = Coordinate(x, y, z);
                                       history.add(HistoryState(selected,
                                           oldCoord, newTile, newCoord));
 
-                              board.update((tiles) {
-                                tileAnimationLayer!.createAnimation(
-                                    selected,
-                                    oldCoord,
-                                    getTileDirection(board, oldCoord));
-                                tileAnimationLayer.createAnimation(
-                                    newTile,
-                                    newCoord,
-                                    getTileDirection(board, newCoord));
-                                tiles[oldSelectedZ][oldSelectedY]
-                                    [oldSelectedX] = null;
-                                tiles[z][y][x] = null;
-                              });
-                            });
+                                      board.update((tiles) {
+                                        tileAnimationLayer!.createAnimation(
+                                            selected,
+                                            oldCoord,
+                                            getTileDirection(board, oldCoord));
+                                        tileAnimationLayer.createAnimation(
+                                            newTile,
+                                            newCoord,
+                                            getTileDirection(board, newCoord));
+                                        tiles[oldSelectedZ][oldSelectedY]
+                                            [oldSelectedX] = null;
+                                        tiles[z][y][x] = null;
+                                      });
+                                    });
 
-                            checkIsBoardSolveable();
-                            setSelectedCoord(null, null, null);
-                          } else {
-                            setSelectedCoord(x, y, z);
-                          }
-                        },
-                      ))),
-        ),
+                                    checkIsBoardSolveable();
+                                    setSelectedCoord(null, null, null);
+                                  } else {
+                                    setSelectedCoord(x, y, z);
+                                  }
+                                },
+                              )));
+                    },
+                  ))),
         Positioned(
           top: 10,
           right: 50,
