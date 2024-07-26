@@ -163,9 +163,9 @@ class _GamePageState extends State<GamePage> {
     final finalTime =
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
     final List<ScoreEntry> entries =
-        await highscoreDB.getTimesByBoard(widget.layout);
+        await highscoreDB.getScoresByBoard(widget.layout);
     final isHighScore = entries.length < 10 || finalTime < entries.last.score;
-    final isBestTime = entries.length == 0 || finalTime < entries.first.score;
+    final isBestScore = entries.length == 0 || finalTime < entries.first.score;
     final TextEditingController _controller = TextEditingController();
 
     String username = "";
@@ -186,7 +186,7 @@ class _GamePageState extends State<GamePage> {
                 this._isLoading = true;
               });
 
-              await highscoreDB.set(widget.layout, finalTime, username);
+              await highscoreDB.setScore(widget.layout, finalTime, username);
               //Navigate to /leaderboard
               setState(() {
                 print("Setting state to not loading");
@@ -219,7 +219,7 @@ class _GamePageState extends State<GamePage> {
                     ? Column(
                         children: <Widget>[
                           Text(
-                            isBestTime
+                            isBestScore
                                 ? "Congratulations! You set a new best time: ${timeToString(finalTime)}"
                                 : "Congratulations! You made it to the leaderboard with a time of ${timeToString(finalTime)}",
                           ),

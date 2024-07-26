@@ -39,7 +39,7 @@ class LeaderboardPage extends StatelessWidget {
           //backgroundColor: Colors.white,
         ),
         body: FutureBuilder<List<ScoreEntry>>(
-          future: highscoreDB.getTimesByBoard(board_layout),
+          future: highscoreDB.getScoresByBoard(board_layout),
           builder:
               (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
             if (snapshot.hasData) {

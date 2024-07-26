@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   loadInit() async {
-    final times = await highscoreDB.getTimes();
+    final times = await highscoreDB.getBestScoreForAllBoards();
     highscoreDB.onChange(() {
       setState(() {});
     });

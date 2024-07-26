@@ -12,9 +12,9 @@ class ScoreEntry {
 }
 
 abstract class IHighscoreDB {
-  Future<Map<String, int>> getTimes();
-  Future<void> set(String layout, int time, String user);
-  Future<List<ScoreEntry>> getTimesByBoard(String layout);
+  Future<Map<String, int>> getBestScoreForAllBoards();
+  Future<void> setScore(String layout, int time, String user);
+  Future<List<ScoreEntry>> getScoresByBoard(String layout);
 }
 
 class CandidHighscoreDB extends IHighscoreDB {
@@ -25,10 +25,11 @@ class CandidHighscoreDB extends IHighscoreDB {
   get actor => icpConnector.actor;
 
   @override
-  Future<Map<String, int>> getTimes() async {
-    print("Calling CandidHighscoreDB.set: getTimes ...");
+  Future<Map<String, int>> getBestScoreForAllBoards() async {
+    print("Calling CandidHighscoreDB.set: getBestScoreForAllBoards ...");
 
-    var result = await callActorMethod<List<dynamic>>(BackendMethod.get_times);
+    var result = await callActorMethod<List<dynamic>>(
+        BackendMethod.get_best_scores_for_all_boards);
     if (result != null) {
       print("HighscoreStorage: Result is not null. Processing items...");
       Map<String, int> times = {};
@@ -41,27 +42,29 @@ class CandidHighscoreDB extends IHighscoreDB {
       print(
           "HighscoreStorage: Finished processing items. Returning times map.");
 
-      print("CandidHighscoreDB.getTimes: result: $times");
+      print("CandidHighscoreDB.getBestScoreForAllBoards: result: $times");
       return times;
     } else {
-      print("CandidHighscoreDB.getTimes: failed: Cannot get times");
+      print(
+          "CandidHighscoreDB.getBestScoreForAllBoards: failed: Cannot get times");
       throw Exception("Cannot get times");
     }
   }
 
   @override
-  Future<List<ScoreEntry>> getTimesByBoard(String layout) async {
-    print("Calling CandidHighscoreDB.set: getTimes ...");
+  Future<List<ScoreEntry>> getScoresByBoard(String layout) async {
+    print("Calling CandidHighscoreDB.set: getBestScoreForAllBoards ...");
 
     var r = await callActorMethod<Map<dynamic, dynamic>>(
-        BackendMethod.get_times_by_board, [layout]);
+        BackendMethod.get_scores_by_board, [layout]);
 
     // result is record {scores: []}
     // result is one element Map
     // take the value of the signle element of result
 
     if (r == null) {
-      print("1 CandidHighscoreDB.getTimes: failed: Cannot get times");
+      print(
+          "1 CandidHighscoreDB.getBestScoreForAllBoards: failed: Cannot get times");
       throw Exception("Cannot get times");
     }
 
@@ -84,21 +87,22 @@ class CandidHighscoreDB extends IHighscoreDB {
       print(
           "HighscoreStorage: Finished processing items. Returning times map.");
 
-      print("CandidHighscoreDB.getTimes: result: $times");
+      print("CandidHighscoreDB.getBestScoreForAllBoards: result: $times");
       return times;
     } else {
-      print("CandidHighscoreDB.getTimes: failed: Cannot get times");
+      print(
+          "CandidHighscoreDB.getBestScoreForAllBoards: failed: Cannot get times");
       throw Exception("Cannot get times");
     }
   }
 
   @override
-  Future<void> set(String layout, int time, String user) async {
+  Future<void> setScore(String layout, int time, String user) async {
     print(
         "CandidHighscoreDB.set: Calling set with layout: $layout and time: $time");
 
-    //callActorMethod with set_time
-    await callActorMethod(BackendMethod.set_time, [layout, time, user]);
+    //callActorMethod with set_score
+    await callActorMethod(BackendMethod.set_score, [layout, time, user]);
 
     print(
         "CandidHighscoreDB.set: Finished calling set. Now calling callbacks...");
@@ -136,9 +140,10 @@ class CandidHighscoreDB extends IHighscoreDB {
 }
 
 abstract class BackendMethod {
-  static const get_times = "get_times";
-  static const set_time = "set_time";
-  static const get_times_by_board = "get_times_by_board";
+  static const get_best_scores_for_all_boards =
+      "get_best_scores_for_all_boards";
+  static const set_score = "set_score";
+  static const get_scores_by_board = "get_scores_by_board";
 
   static final Leaderboard = IDL.Record({
     'scores': IDL.Vec(
@@ -147,15 +152,15 @@ abstract class BackendMethod {
 
   /// you can copy/paste from .dfx/local/canisters/counter/counter.did.js
   static final ServiceClass idl = IDL.Service({
-    BackendMethod.get_times: IDL.Func(
+    BackendMethod.get_best_scores_for_all_boards: IDL.Func(
       [],
       [
         IDL.Vec(IDL.Tuple([IDL.Text, IDL.Nat32]))
       ],
       ['query'],
     ),
-    BackendMethod.set_time: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
-    BackendMethod.get_times_by_board:
+    BackendMethod.set_score: IDL.Func([IDL.Text, IDL.Nat32, IDL.Text], [], []),
+    BackendMethod.get_scores_by_board:
         IDL.Func([IDL.Text], [Leaderboard], ['query']),
   });
 }
