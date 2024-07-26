@@ -39,83 +39,86 @@ class LeaderboardPage extends StatelessWidget {
           }
         },
         child: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(
-            '$board_layout_display layout leaders',
-            style: getTextStyle(),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/backgrounds/scenic_bamboo_china.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-          //backgroundColor: Colors.white,
-        ),
-        body: FutureBuilder<List<ScoreEntry>>(
-          future: highscoreDB.getScoresByBoard(board_layout),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
-            if (snapshot.hasData) {
-              return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columns: <DataColumn>[
-                        DataColumn(
-                          label: Text(
-                            'Rank',
-                            style: getTextStyle(),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'Username',
-                            style: getTextStyle(),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'Time (secs)',
-                            style: getTextStyle(),
-                          ),
-                        ),
-                      ],
-                      rows: List<DataRow>.generate(
-                        MAX_LEADERBOARD_ENTRIES,
-                        (int index) => DataRow(
-                          cells: <DataCell>[
-                            DataCell(Text(
-                              '${index + 1}',
-                              style: getTextStyle(),
-                            )),
-                            DataCell(Text(
-                              _getData(snapshot, index, 'username'),
-                              style: getTextStyle(),
-                              )),
-                            DataCell(Text(
-                              index < (snapshot.data?.length ?? 0) ? _fomatToMinSec(int.parse(_getData(snapshot, index, 'score'))) : '',
-                              style: getTextStyle(),
-                            )),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ));
-            } else if (snapshot.hasError) {
-              return Text(
-                'Error: ${snapshot.error}',
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              title: Text(
+                '$board_layout_display layout leaders',
                 style: getTextStyle(),
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
-      ),
+              ),
+              //backgroundColor: Colors.white,
+            ),
+            body: FutureBuilder<List<ScoreEntry>>(
+              future: highscoreDB.getScoresByBoard(board_layout),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<ScoreEntry>> snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: <DataColumn>[
+                            DataColumn(
+                              label: Text(
+                                'Rank',
+                                style: getTextStyle(),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Username',
+                                style: getTextStyle(),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Time (secs)',
+                                style: getTextStyle(),
+                              ),
+                            ),
+                          ],
+                          rows: List<DataRow>.generate(
+                            MAX_LEADERBOARD_ENTRIES,
+                            (int index) => DataRow(
+                              cells: <DataCell>[
+                                DataCell(Text(
+                                  '${index + 1}',
+                                  style: getTextStyle(),
+                                )),
+                                DataCell(Text(
+                                  _getData(snapshot, index, 'username'),
+                                  style: getTextStyle(),
+                                )),
+                                DataCell(Text(
+                                  index < (snapshot.data?.length ?? 0)
+                                      ? _fomatToMinSec(int.parse(
+                                          _getData(snapshot, index, 'score')))
+                                      : '',
+                                  style: getTextStyle(),
+                                )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ));
+                } else if (snapshot.hasError) {
+                  return Text(
+                    'Error: ${snapshot.error}',
+                    style: getTextStyle(),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
         ));
   }
 }
@@ -128,7 +131,8 @@ String _fomatToMinSec(int score) {
   return "${twoDigits(duration.inMinutes.remainder(60))}:${twoDigits(duration.inSeconds.remainder(60))}.${twoDigitsFraction(duration.inMilliseconds.remainder(1000) ~/ 10)}";
 }
 
-String _getData(AsyncSnapshot<List<ScoreEntry>> snapshot, int index, String key) {
+String _getData(
+    AsyncSnapshot<List<ScoreEntry>> snapshot, int index, String key) {
   if (index >= (snapshot.data?.length ?? 0)) {
     return '';
   }
