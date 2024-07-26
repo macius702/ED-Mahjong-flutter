@@ -26,7 +26,6 @@ import '../../widgets/board.dart';
 
 import 'dart:async';
 
-
 class GamePage extends StatefulWidget {
   static const Route = '/game';
   final String layout;
@@ -165,7 +164,8 @@ class _GamePageState extends State<GamePage> {
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
     final List<ScoreEntry> entries =
         await highscoreDB.getScoresByBoard(widget.layout);
-    final isHighScore = entries.length < MAX_LEADERBOARD_ENTRIES || finalTime < entries.last.score;
+    final isHighScore = entries.length < MAX_LEADERBOARD_ENTRIES ||
+        finalTime < entries.last.score;
     final isBestScore = entries.length == 0 || finalTime < entries.first.score;
     final TextEditingController _controller = TextEditingController();
 
@@ -371,11 +371,11 @@ class _GamePageState extends State<GamePage> {
                               newTile != null &&
                               tilesMatch(selected, newTile)) {
                             setState(() {
-                              final oldCoord = Coordinate(
-                                  oldSelectedX, oldSelectedY, oldSelectedZ);
+                                      final oldCoord = Coordinate(oldSelectedX,
+                                          oldSelectedY, oldSelectedZ);
                               final newCoord = Coordinate(x, y, z);
-                              history.add(HistoryState(
-                                  selected, oldCoord, newTile, newCoord));
+                                      history.add(HistoryState(selected,
+                                          oldCoord, newTile, newCoord));
 
                               board.update((tiles) {
                                 tileAnimationLayer!.createAnimation(
