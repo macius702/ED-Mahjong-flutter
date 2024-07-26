@@ -518,7 +518,7 @@ class _GamePageState extends State<GamePage> {
   checkIsBoardSolveable() async {
     final preferences = await Preferences.instance;
     if (preferences.developerShortenGame) {
-      await showWinningDialog(); // mtlk todo - remove this
+      await showWinningDialog();
       return;
     }
 
