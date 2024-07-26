@@ -199,7 +199,7 @@ class _GamePageState extends State<GamePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      LeaderboardPage(board_setup: widget.layout),
+                      LeaderboardPage(board_layout: widget.layout),
                 ),
               );
             } else {
@@ -426,7 +426,7 @@ class _GamePageState extends State<GamePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                LeaderboardPage(board_setup: widget.layout)));
+                                LeaderboardPage(board_layout: widget.layout)));
                   },
                   tooltip: 'Leaderboard',
                   child: Icon(Icons.leaderboard),

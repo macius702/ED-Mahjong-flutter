@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class LeaderboardPage extends StatelessWidget {
   static const Route = '/leaderboard';
-  final String board_setup;
-  final String board_setup_display;
-  LeaderboardPage({Key? key, required String board_setup})
-      : board_setup = board_setup,
-        board_setup_display =
-            "${board_setup.split('.').first[0].toUpperCase()}${board_setup.split('.').first.substring(1)}", //take only before the dot
+  final String board_layout;
+  final String board_layout_display;
+  LeaderboardPage({Key? key, required String board_layout})
+      : board_layout = board_layout,
+        board_layout_display =
+            "${board_layout.split('.').first[0].toUpperCase()}${board_layout.split('.').first.substring(1)}", //take only before the dot
 
         super(key: key);
   @override
@@ -33,13 +33,13 @@ class LeaderboardPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text(
-            '$board_setup_display layout leaders',
+            '$board_layout_display layout leaders',
             style: getTextStyle(),
           ),
           //backgroundColor: Colors.white,
         ),
         body: FutureBuilder<List<ScoreEntry>>(
-          future: highscoreDB.getTimesByBoard(board_setup),
+          future: highscoreDB.getTimesByBoard(board_layout),
           builder:
               (BuildContext context, AsyncSnapshot<List<ScoreEntry>> snapshot) {
             if (snapshot.hasData) {
