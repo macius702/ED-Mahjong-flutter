@@ -26,6 +26,8 @@ import '../../widgets/board.dart';
 
 import 'dart:async';
 
+const MAX_LEADERBOARD_ENTRIES = 10;
+
 class GamePage extends StatefulWidget {
   static const Route = '/game';
   final String layout;
@@ -164,7 +166,7 @@ class _GamePageState extends State<GamePage> {
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
     final List<ScoreEntry> entries =
         await highscoreDB.getScoresByBoard(widget.layout);
-    final isHighScore = entries.length < 10 || finalTime < entries.last.score;
+    final isHighScore = entries.length < MAX_LEADERBOARD_ENTRIES || finalTime < entries.last.score;
     final isBestScore = entries.length == 0 || finalTime < entries.first.score;
     final TextEditingController _controller = TextEditingController();
 
