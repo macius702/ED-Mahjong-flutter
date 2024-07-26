@@ -52,33 +52,20 @@ class TilesetRenderer {
       TilesetMeta tileset, Future<Image> image) async {
     final recorder = PictureRecorder();
     final canvas = Canvas(recorder);
-    canvas.drawImage(
-        await image, Offset.zero, new Paint()..colorFilter = darkenFilter);
-    return recorder
+
+    // Draw the original image
+    Image originalImage = await image;
+    canvas.drawImage(originalImage, Offset.zero, Paint());
+
+    // Draw a semi-transparent black layer over the image
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, originalImage.width.toDouble(),
+          originalImage.height.toDouble()),
+      Paint()..color = Color.fromRGBO(0, 0, 0, 0.5),
+    );
+
+    return await recorder
         .endRecording()
         .toImage(tileset.tileWidth, tileset.tileHeight);
   }
-
-  static const ColorFilter darkenFilter = ColorFilter.matrix(<double>[
-    0.5,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0.5,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0.5,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    0,
-  ]);
 }
