@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
               create: (context) => Preferences.instance, initialData: null),
         ],
         child: MaterialApp(
-          title: 'ED Mahjong',
+          title: 'Mahjong',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber, accentColor: Colors.amber,brightness: Brightness.light),
           ),
