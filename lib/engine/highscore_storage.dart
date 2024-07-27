@@ -26,7 +26,8 @@ class CandidHighscoreDB extends IHighscoreDB {
 
   @override
   Future<Map<String, int>> getBestScoreForAllBoards() async {
-    print("Calling CandidHighscoreDB.set: getBestScoreForAllBoards ...");
+    print(
+        "Calling CandidHighscoreDB.getBestScoreForAllBoards: getBestScoreForAllBoards ...");
 
     var result = await callActorMethod<List<dynamic>>(
         BackendMethod.get_best_scores_for_all_boards);

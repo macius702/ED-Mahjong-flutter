@@ -68,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.pushNamed(
                       context,
                       '${GamePage.Route}/${item.value.basename}',
-                      arguments: changeState, // Pass the callback as an argument
                     );
                     setState(() {});
                   },
@@ -90,11 +89,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  void changeState() {
-  setState(() {
-    // This will cause the build method to be called again, 
-    // which will rebuild the LayoutPreview widget.
-  });
-}
 }
