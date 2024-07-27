@@ -81,8 +81,9 @@ class CandidHighscoreDB extends IHighscoreDB {
         print('type of item is ${item.runtimeType}');
 
         print(
-            "HighscoreStorage: Processing item with key ${item[1]} and value ${item[0]}");
-        times.add(ScoreEntry(username: item[1], score: item[0]));
+            "HighscoreStorage: Processing item with key ${item['user']} and value ${item['miliseconds']}");
+        times.add(
+            ScoreEntry(username: item['user'], score: item['miliseconds']));
         print("HighscoreStorage: Added item to times map.");
       }
       print(
@@ -146,10 +147,8 @@ abstract class BackendMethod {
   static const set_score = "set_score";
   static const get_scores_by_board = "get_scores_by_board";
 
-  static final Leaderboard = IDL.Record({
-    'scores': IDL.Vec(
-        IDL.Tuple([IDL.Nat32, IDL.Text])), // mtlk todo - record not needed
-  });
+  static final Score = IDL.Record({'user': IDL.Text, 'miliseconds': IDL.Nat32});
+  static final Leaderboard = IDL.Record({'scores': IDL.Vec(Score)});
 
   /// you can copy/paste from .dfx/local/canisters/counter/counter.did.js
   static final ServiceClass idl = IDL.Service({
