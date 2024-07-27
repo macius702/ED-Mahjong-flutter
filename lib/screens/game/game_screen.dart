@@ -160,8 +160,16 @@ class _GamePageState extends State<GamePage> {
   }
 
   showWinningDialog() async {
-    final finalTime =
-        DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
+    final preferences = await Preferences.instance;
+
+    // When developer option is on then add 59 mniutes to the time
+    final addittionalFakeTime =
+        preferences.developerShortenGame ? 59 * 60 * 1000 : 0;
+
+    final finalTime = DateTime.now().millisecondsSinceEpoch -
+        (this.startAt ?? 0) +
+        addittionalFakeTime;
+
     final List<ScoreEntry> entries =
         await highscoreDB.getScoresByBoard(widget.layout);
     final isHighScore = entries.length < MAX_LEADERBOARD_ENTRIES ||
@@ -188,14 +196,16 @@ class _GamePageState extends State<GamePage> {
               });
 
               await highscoreDB.setScore(widget.layout, finalTime, username);
-              //Navigate to /leaderboard
+
               setState(() {
                 print("Setting state to not loading");
                 this._isLoading = false;
               });
+
               Navigator.of(context).pop();
               Navigator.of(context).pop();
 
+              //Navigate to /leaderboard
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -325,8 +335,7 @@ class _GamePageState extends State<GamePage> {
               restore: restore,
             ),
       body: Stack(children: [
-        renderBackground(
-          Center(
+        renderBackground(Center(
             child: board == null
                 ? (_isLoading
                     ? CircularProgressIndicator()
