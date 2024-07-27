@@ -23,9 +23,8 @@ dependencies:
     sdk: flutter
 
   agent_dart: # ^0.1.24+1
-    git:
-      url: git@github.com:macius702/agent_dart.git
-      ref: main
+    any
+
   archive: 3.3.7 # mtlk todo : dependent on the above
   google_fonts: ^4.0.4
 

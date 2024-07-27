@@ -4,12 +4,11 @@ packages:
   agent_dart:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: ce59888f92375e133d1640b8d1b25c8e4a7882b3
-      url: "git@github.com:macius702/agent_dart.git"
-    source: git
-    version: "0.1.24+102"
+      name: agent_dart
+      sha256: f6710b768ab1095913167ab6a71b9726fb6901083fdb4ab2eca6127a4d3273e4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.24+1"
   archive:
     dependency: "direct main"
     description:
