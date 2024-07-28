@@ -183,6 +183,8 @@ class _GamePageState extends State<GamePage> {
 
     showDialog(
       context: this.context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      barrierDismissible: false /* user must tap button! */,
       builder: (BuildContext context) {
         void handleFormSubmission() async {
           if (_formKey.currentState?.validate() ?? false) {
@@ -255,9 +257,10 @@ class _GamePageState extends State<GamePage> {
             ),
           ),
           actions: <Widget>[
-            TextButton(
+            DebouncedButton(
               child: Text('Yay!'),
               onPressed: handleFormSubmission,
+              debounceDuration: Duration(milliseconds: 10000),
             ),
           ],
         );
@@ -268,6 +271,8 @@ class _GamePageState extends State<GamePage> {
   showLoosingDialog(String reason) async {
     showDialog(
       context: this.context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      barrierDismissible: false /* user must tap button! */,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text("You lost! $reason."),
@@ -287,6 +292,8 @@ class _GamePageState extends State<GamePage> {
   showShuffleDialog() async {
     showDialog(
       context: this.context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      barrierDismissible: false /* user must tap button! */,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text("No more available moves"),
@@ -606,5 +613,60 @@ class _GamePageState extends State<GamePage> {
       this.history = this.history.take(idx).toList();
       this.shuffleId++;
     });
+  }
+}
+
+//https://medium.com/codex/double-tap-trouble-conquering-multiple-tap-issues-in-flutter-ecf62cde32b1
+// Double-Tap Trouble: Conquering Multiple Tap Issues in Flutter
+// Debasmita Sarkar
+// CodeX
+// Debasmita Sarkar
+
+// ·
+// Follow
+
+class DebouncedButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+  final Duration debounceDuration;
+
+  DebouncedButton({
+    Key? key,
+    required this.onPressed,
+    required this.child,
+    this.debounceDuration = const Duration(milliseconds: 500),
+  }) : super(key: key);
+
+  @override
+  _DebouncedButtonState createState() => _DebouncedButtonState();
+}
+
+class _DebouncedButtonState extends State<DebouncedButton> {
+  bool _isProcessing = false;
+  Timer? _debounceTimer;
+
+  void _handleTap() {
+    if (_isProcessing) return;
+
+    _isProcessing = true;
+    widget.onPressed();
+
+    _debounceTimer = Timer(widget.debounceDuration, () {
+      _isProcessing = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: _handleTap,
+      child: widget.child,
+    );
   }
 }
