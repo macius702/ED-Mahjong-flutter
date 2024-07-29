@@ -62,7 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 CheckboxListTile(
-                  title: Text("Developer option:shorten game to one tiles pair: "),
+                  title:
+                      Text("Developer option:shorten game to one tiles pair: "),
                   value: preferences.developerShortenGame,
                   onChanged: (val) {
                     preferences.developerShortenGame = val ?? false;
@@ -78,7 +79,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       TextButton(
                           onPressed: () =>
                               launch("https://github.com/edave64/ED-Mahjong"),
-                          child: Text("View source"))
+                          child:
+                              Text("View original flutter source by edave64")),
+                      TextButton(
+                          onPressed: () => launch(
+                              "https://github.com/macius702/mahjong_icp"),
+                          child: Text(
+                              "View Internet Computer integration source by Matiki")),
                     ]);
                   },
                 ),
