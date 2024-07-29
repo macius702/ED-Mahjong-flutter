@@ -1,5 +1,4 @@
 // ignore_for_file: unused_import
-// ignore_for_file: avoid_print
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:io';
@@ -20,22 +19,13 @@ class ICPconnector {
   final String url;
 
   ICPconnector({required this.canisterId, required this.url, ServiceClass? newIdl}) {
-    print('newIdl is $newIdl');
-    print('canisterId: $canisterId');
-    print('url: $url');
   }
   // A future method because we need debug mode works for local developement
   Future<void> setAgent(
       {String? newCanisterId, ServiceClass? newIdl, String? newUrl, Identity? newIdentity, bool? debug}) async {
-    print('newCanisterId: $newCanisterId');
-    print('newIdl: $newIdl');
-    print('newUrl: $newUrl');
-    print('newIdentity: $newIdentity');
-    print('debug: $debug');
 
     try {
       // Your network request code here
-      print("Before createAgent");
 
       _agentFactory ??= await AgentFactory.createAgent(
           canisterId: newCanisterId ?? canisterId,
@@ -44,7 +34,6 @@ class ICPconnector {
           identity: newIdentity,
           debug: debug ?? true);
 
-      print("After createAgent");
     } catch (e) {
       if (e is SocketException) {
         print('Cannot connect to the server. Please check your internet connection and server status.');

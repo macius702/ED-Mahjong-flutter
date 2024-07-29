@@ -31,10 +31,8 @@ class LeaderboardPage extends StatelessWidget {
         autofocus: true,
         focusNode: _focusNode,
         onKeyEvent: (event) {
-          print('onKeyEvent');
           if (event is KeyDownEvent &&
               event.logicalKey == LogicalKeyboardKey.backspace) {
-            print('Backspace key pressed');
             Navigator.of(context).pop();
           }
         },

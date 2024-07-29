@@ -193,14 +193,12 @@ class _GamePageState extends State<GamePage> {
 
             if (isHighScore) {
               setState(() {
-                print("Setting state to loading");
                 this._isLoading = true;
               });
 
               await highscoreDB.setScore(widget.layout, finalTime, username);
 
               setState(() {
-                print("Setting state to not loading");
                 this._isLoading = false;
               });
 
