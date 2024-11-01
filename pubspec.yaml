@@ -27,7 +27,7 @@ dependencies:
         url: git@github.com:macius702/agent_dart.git
         ref: main
 
-  archive: 3.3.7 # mtlk todo : dependent on the above
+  archive: 3.6.1 # mtlk todo : dependent on the above
   google_fonts: ^4.0.4
 
   cupertino_icons: ^1.0.2
